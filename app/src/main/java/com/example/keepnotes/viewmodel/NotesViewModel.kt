@@ -3,6 +3,7 @@ package com.example.keepnotes.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.keepnotes.database.Notes
 import com.example.keepnotes.database.NotesDao
@@ -13,14 +14,22 @@ import kotlinx.coroutines.launch
 
 class NotesViewModel(application: Application): AndroidViewModel(application) {
 
-    private val notesDao: NotesDao = NotesDatabase.getDatabase(application).notesDao()
+    private val notesDao: NotesDao by lazy{
+        NotesDatabase.getDatabase(application).notesDao()
+    }
     private val notesRepository: Repository
 
     val getAllNotes: LiveData<List<Notes>>
 
+
     init {
         notesRepository = Repository(notesDao)
         getAllNotes = notesRepository.allData
+    }
+
+    // To search Notes From Database
+    fun searchDatabase(searchQuery: String): LiveData<List<Notes>>{
+        return notesRepository.searchNotes(searchQuery).asLiveData()
     }
 
      fun insertData(notes: Notes){

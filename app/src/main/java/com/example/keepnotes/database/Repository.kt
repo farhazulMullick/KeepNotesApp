@@ -1,6 +1,7 @@
 package com.example.keepnotes.database
 
 import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
 
 class Repository(private val dao: NotesDao) {
 
@@ -21,4 +22,9 @@ class Repository(private val dao: NotesDao) {
     suspend fun deleteAll(){
         dao.deleteAll()
     }
+
+    fun searchNotes(searchQuery: String): Flow<List<Notes>> {
+        return dao.searchNotes(searchQuery)
+    }
+
 }

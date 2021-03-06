@@ -1,9 +1,8 @@
 package com.example.keepnotes.fragments.list
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -13,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.keepnotes.R
 import com.example.keepnotes.databinding.FragmentListBinding
+import com.example.keepnotes.utils.keyBoardManager
 import com.example.keepnotes.viewmodel.NotesViewModel
 
 class ListFragment : Fragment() {
@@ -35,6 +35,12 @@ class ListFragment : Fragment() {
             findNavController().navigate(R.id.action_listFragment_to_addFragment)
             binding.extendedFab.hide()
         }
+
+        // Hide Soft keyboard
+        keyBoardManager(requireActivity())
+
+        // options menu enable
+        setHasOptionsMenu(true)
 
 
         // Set up Recycler View
@@ -67,8 +73,40 @@ class ListFragment : Fragment() {
             }
         })
 
+
         return binding.root
     }
+
+    private fun searchDatabase(searchQuery: String?){
+        viewModel.searchDatabase("%$searchQuery%").observe(viewLifecycleOwner, {
+            adapter.setData(it)
+        })
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_list_fragment, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+
+        val search = menu.findItem(R.id.search_btn_icon)
+        val searchView = search?.actionView as? SearchView
+
+        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if(query != null) searchDatabase(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if(newText != null) searchDatabase(newText)
+                return true
+            }
+
+        })
+        searchView?.isSubmitButtonEnabled = true
+    }
+
+
 
     override fun onDetach() {
         super.onDetach()

@@ -10,6 +10,9 @@
     <string name="cancel">Cancel</string>
     <string name="keep_notes">Keep Notes</string>
     <string name="update_fragment_transition">updateFragmentTransition</string>
+    <string name="about_description_txt">This Note-Making, Task Scheduling app is made by Farhazul Islam Mullick with love and care and it is for education purposes and for personal uses</string>
+    <string name="about">About</string>
+    <string name="search">Search</string>
 
     <string-array name="prioritySpinner">
         <item>HIGH</item>
